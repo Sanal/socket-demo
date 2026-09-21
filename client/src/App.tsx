@@ -1,57 +1,65 @@
-import { useEffect, useState } from "react";
+import { Profiler, useEffect, useState } from "react";
 import { socket } from "./socket";
 
-import type { Instrument, FeedItem } from "./types";
+import { InstrumentTable } from "./components/InstrumentTable";
+import { Feed } from "./components/Feed";
+import { Stats } from "./components/Stats";
+import "./App.css";
 
 function App() {
-  const [instruments, setInstruments] = useState<Instrument[]>([]);
-  const [feed, setFeed] = useState<FeedItem[]>([]);
+  const [connected, setConnected] = useState(socket.connected);
 
   useEffect(() => {
-    const handleInitialInstruments = (data: Instrument[]) => {
-      setInstruments(data);
+    const handleConnect = () => {
+      setConnected(true);
     };
 
-    const handleInstrumentUpdate = (instrument: Instrument) => {
-      setInstruments((prev) =>
-        prev.map((item) => (item.id === instrument.id ? instrument : item)),
-      );
+    const handleDisconnect = () => {
+      setConnected(false);
     };
 
-    const handleFeed = (item: FeedItem) => {
-      setFeed((prev) => [item, ...prev]);
-    };
-
-    socket.on("instrument:init", handleInitialInstruments);
-    socket.on("instrument:update", handleInstrumentUpdate);
-    socket.on("feed", handleFeed);
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
 
     return () => {
-      socket.off("instruments:init", handleInitialInstruments);
-      socket.off("instrument:update", handleInstrumentUpdate);
-      socket.off("feed", handleFeed);
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
     };
   }, []);
 
   return (
-    <div>
-      <h1>Realtime Dashboard</h1>
-      <h2>Instruments: {instruments.length}</h2>
-      <h2>Feed: {feed.length}</h2>
+    <div className="container">
+      <header className="header">
+        <h1>Realtime Dashboard</h1>
+        <p>
+          Status:{" "}
+          {connected ? (
+            <span style={{ color: "green" }}>Connected</span>
+          ) : (
+            <span style={{ color: "red" }}>Disconnected</span>
+          )}
+        </p>
+        <Stats />
+      </header>
 
-      <h2>Instruments</h2>
-      {instruments.map((instrument) => (
-        <div key={instrument.id}>
-          {instrument.symbol} {instrument.price.toFixed(2)}
-        </div>
-      ))}
+      <div className="content-grid">
+        <section>
+          <h2>Instruments</h2>
+          <Profiler
+            id="instruments"
+            onRender={(id, phase, actualDuration) => {
+              console.log({ id, phase, actualDuration });
+            }}
+          >
+            <InstrumentTable />
+          </Profiler>
+        </section>
 
-      <h2>Feed</h2>
-      {feed.map((item) => (
-        <div key={item.id}>
-          {item.symbol} {item.price.toFixed(2)}
-        </div>
-      ))}
+        <section>
+          <h2>Feed</h2>
+          <Feed />
+        </section>
+      </div>
     </div>
   );
 }

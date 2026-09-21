@@ -2,7 +2,7 @@ import type { Instrument, FeedItem } from "./types.js";
 
 const SYMBOLS = ["BTC", "ETH", "SOL", "XRP", "DOGE", "BNB", "ADA", "DOT"];
 
-export const INSTRUMENT_COUNT = 5000;
+export const INSTRUMENT_COUNT = 8;
 
 let feedId = 0;
 

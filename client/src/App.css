@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100dvh;
+  font-family: sans-serif;
+}
+
+.header {
+  padding: 0 20px 20px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.content-grid section {
+  padding: 0 20px 20px;
+}
+
+.instrument-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.feed-item {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}

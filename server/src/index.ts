@@ -51,7 +51,7 @@ app.get("/", (_req, res) => {
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
-  socket.emit("instruments.init", Array.from(instruments.values()));
+  socket.emit("instruments:init", Array.from(instruments.values()));
 
   socket.on("disconnect", (reason) => {
     (console.log(`Client disconnected: ${socket.id}`), reason);
@@ -75,7 +75,7 @@ setInterval(() => {
 
     instruments.set(instrument.id, updated);
 
-    io.emit("instrument.update", updated);
+    io.emit("instrument:update", updated);
 
     instrumentUpdatesSent++;
   }

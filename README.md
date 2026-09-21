@@ -6,6 +6,8 @@ The server uses Socket.IO to generate a continuous stream of instrument updates 
 
 The project is intentionally simple. The goal is to make performance problems easy to reproduce and compare.
 
+![App's screenshot demonstrating its framerate and React components' update highlights](./assets/screenshot.png)
+
 ## Run locally
 
 Install dependencies:
